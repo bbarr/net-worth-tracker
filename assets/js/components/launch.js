@@ -28,12 +28,13 @@ export default ({ state, actions }) => {
         </div>
         <div class="mt-10 hidden md:block">
           <div class="text-xl text-center prose dark:text-white">
-            <p>This is an <span class="font-semibold">open-source</span>, <span class="font-semibold">100% free</span> and <span class="font-semibold">private</span> web app.</p>
+            <p>This is a <span class="font-semibold">100% free</span> and <span class="font-semibold">private</span> web app.</p>
             <p class="mt-10">
               <img src="/ss.png" class="mt-6 w-full h-auto shadow border border-gray-400" />
             </p>
             <p>Although you may be loading this site from a public domain, no data is ever transmitted off of your computer. Instead, Net Worth Tracker uses a relatively new browser API for reading and writing to a local file on your computer.</p>
-            <p>Just add your assets and liabilities and then check back next month or maybe next quarter and update any values that are "out of date". Overtime, your net worth calculation will stabalize and give you a sense of whether you are on the right financial path.</p>
+            <p>Just add your assets and liabilities and then check back next month or maybe next quarter and update any values that are "out of date". Over time, your net worth calculation will stabalize and give you a sense of whether you are on the right financial path.</p>
+            <p>It is also a helpful reminder to occasionally log in to your various accounts to make sure you are on top of them.</p>
             <p class="text-base upercase">(Browser support: Chrome, Edge, and Opera)</p>
           </div>
           <div class="mt-10 flex justify-center">

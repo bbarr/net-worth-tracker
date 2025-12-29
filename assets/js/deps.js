@@ -1,9 +1,9 @@
 
-import { createElement, render } from 'https://cdn.skypack.dev/preact'
-import { default as htm } from 'https://cdn.skypack.dev/htm'
-const html = htm.bind(createElement)
+import { h, render } from 'https://esm.sh/preact@10.19.3'
+import htm from 'https://esm.sh/htm@3.1.1'
+const html = htm.bind(h)
 export { render, html }
-export * as hooks from 'https://cdn.skypack.dev/preact/hooks'
+export * as hooks from 'https://esm.sh/preact@10.19.3/hooks'
 
 import * as ChartModule from 'https://cdn.jsdelivr.net/npm/chart.js@4.2.0/+esm'
 ChartModule.Chart.register(...ChartModule.registerables)

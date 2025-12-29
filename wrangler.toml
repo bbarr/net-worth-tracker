@@ -1,0 +1,3 @@
+name = "net-worth-tracker"
+compatibility_date = "2025-12-29"
+pages_build_output_dir = "assets"

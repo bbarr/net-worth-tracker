@@ -5,7 +5,7 @@ import Progress from './progress.js'
 import Stats from './stats.js'
 import Assets from './assets.js'
 import Liabilities from './liabilities.js'
-import { renderPercent, prevDef, renderMoney } from '../util.js'
+import { renderPercent, id, prevDef, renderMoney } from '../util.js'
 
 import { createStubAsset, createStubLiability } from '../helpers.js'
 
@@ -67,16 +67,41 @@ export default ({ state, actions }) => {
     `
   }
 
+  const now = new Date
+  const months = new Array(12).fill('').map((_, i) => {
+    const prevMonth = new Date
+    prevMonth.setDate(1)
+    prevMonth.setMonth(now.getMonth() - i)
+    if (prevMonth.toISOString() < state.valuations[0].createdAt)
+      return null
+    return prevMonth
+  }).filter(id)
+
   return html`
     <div class="">
       <${Header} state=${state} actions=${actions} />
+      <div class="max-w-5xl items-center mx-auto flex justify-end text-xl">
+        As of:
+        <div class="ml-4">
+          <select class="input" onChange=${e => actions.updateContextDate(e.target.value)}>
+            <option value=${(new Date()).toISOString()}>Today</option>
+            ${months.map(month => {
+              return html`
+                <option value=${month.toISOString()}>
+                  ${month.toLocaleDateString('en-us', { year:"numeric", month:"long"})}
+                </option>
+              `
+            })}
+          </select>
+        </div>
+      </div>
       <div class="mt-20 max-w-5xl mx-auto">
         <div class="text-6xl text-center font-semibold">${renderMoney(state.calculations.netWorth)}</div>
         <div class="mt-14 w-4/5 mx-auto">
           <${Progress} history=${state.history} />
         </div>
       </div>
-      <div class="max-w-7xl mx-auto">
+      <div class="max-w-5xl mx-auto">
         <div class="flex justify-center items-center">
           <div class="p-8">
             <div class="text-center text-xl mb-2 dark:text-gray-400">12-Month Change</div>
@@ -92,7 +117,7 @@ export default ({ state, actions }) => {
           </div>
         </div>
         <${Stats} state=${state} actions=${actions} />
-        <div class="mt-20 max-w-7xl mx-auto">
+        <div class="mt-20 max-w-5xl mx-auto">
           <div class="flex justify-between">
             <div class="w-1/2 pr-10">
               <${Assets} state=${state} actions=${actions} />

@@ -23,52 +23,32 @@ export default ({ state, actions }) => {
   const [ cashAssets, nonCashAssets ] = separate(isCash, assets)
   const cashTotal = sum(cashAssets, 'value')
   const averageLoanToValue = links.length ? (links.reduce((sum, link) => {
-    const assetValue = valuations.find(v => v.accountId === link.assetId)?.value
-    const liabilityValue = valuations.find(v => v.accountId === link.liabilityId)?.value
+    const assetValue = valuations.filter(v => v.createdAt <= state.contextDate).find(v => v.accountId === link.assetId)?.value
+    const liabilityValue = valuations.filter(v => v.createdAt <= state.contextDate).find(v => v.accountId === link.liabilityId)?.value
     return assetValue && liabilityValue && (sum + (liabilityValue / assetValue))
   }, 0) / links.length) : ''
 
+  const stats = [
+    { label: 'Effective Debt Interest Rate', glossaryKey: 'effective-debt-interest-rate', value: renderPercent(effectiveRate) },
+    { label: 'Estimated Annual Debt Expense', glossaryKey: 'estimated-annual-interest-cost', value: renderMoney(interestCost) },
+    { label: 'Assets / Debt', glossaryKey: 'assets-to-debt', value: renderNumber(assetsToDebt) },
+    { label: 'Average Loan to Value', glossaryKey: 'loan-to-value', value: renderPercent(averageLoanToValue) }
+  ]
+
   return html`
-    <div class="mt-5 grid grid-cols-3 gap-4">
-      <div class="shadow bg-gray-50 dark:bg-transparent px-4 py-8 rounded">
-        <div class="text-center text-xl mb-3 dark:text-gray-400 flex items-center justify-center">
-          <a href="#" class="uppercase link-definition" onClick=${prevDef(() => actions.update({ glossaryKey: 'effective-debt-interest-rate' }))}>
-            Effective Debt Interest Rate
-          </a>
-        </div>
-        <div class="text-center text-4xl">${renderPercent(effectiveRate)}</div>
-        <!--
-        <div class="flex items-center justify-center text-sm mt-2 dark:text-gray-400">
-          (versus <a href="#" onClick=${prevDef(() => actions.update({ glossaryKey: 'risk-free-rate' }))} class="link-definition mx-1">risk-free rate</a> of 3.82%)
-        </div>
-          -->
-      </div>
-      <div class="shadow bg-gray-50 dark:bg-transparent px-4 py-8 rounded">
-        <div class="text-center text-xl mb-3 dark:text-gray-400">
-          <a href="#" class="uppercase link-definition" onClick=${prevDef(() => actions.update({ glossaryKey: 'estimated-annual-interest-cost' }))}>
-            Estimated Annual Debt Expense
-          </a>
-        </div>
-        <div class="text-center text-4xl">${renderMoney(interestCost)}</div>
-      </div>
-      <div class="shadow bg-gray-50 dark:bg-transparent px-4 py-8 rounded">
-        <div class="text-center text-xl mb-3 dark:text-gray-400">
-          <a href="#" class="uppercase link-definition" onClick=${prevDef(() => actions.update({ glossaryKey: 'assets-to-debt' }))}>
-            Assets / Debt
-          </a>
-        </div>
-        <div class="text-center text-4xl">${renderNumber(assetsToDebt)}</div>
-      </div>
-    </div>
-    <div class="mt-5 grid grid-cols-3 gap-4">
-      <div class="shadow bg-gray-50 dark:bg-transparent px-4 py-8 rounded">
-        <div class="text-center text-xl mb-3 dark:text-gray-400">
-          <a href="#" class="uppercase link-definition" onClick=${prevDef(() => actions.update({ glossaryKey: 'loan-to-value' }))}>
-            Average Loan to Value
-          </a>
-        </div>
-        <div class="text-center text-4xl">${renderPercent(averageLoanToValue)}</div>
-      </div>
+    <div class="mt-5 grid grid-cols-2 gap-4">
+      ${stats.map(stat => {
+        return html`
+          <div class="shadow bg-gray-50 dark:bg-transparent px-4 py-8 rounded flex flex-col justify-between">
+            <div class="text-center text-base mb-3 dark:text-gray-400 flex items-center justify-center">
+              <a href="#" class="uppercase link-definition" onClick=${prevDef(() => actions.update({ glossaryKey: stat.glossaryKey }))}>
+                ${stat.label}
+              </a>
+            </div>
+            <div class="text-center text-4xl">${stat.value}</div>
+          </div>
+        `
+      })}
     </div>
   `
 }

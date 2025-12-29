@@ -12,11 +12,11 @@ export function getNetWorthAt({ assets, liabilities, valuations, date }) {
   }, 0)
 }
 
-export const collate = ({ links, assets, liabilities, valuations }) => {
+export const collate = ({ links, assets, liabilities, valuations }, { contextDate }) => {
 
-  const now = new Date
-  const twoWeeksAgo = (new Date()).setDate(now.getDate() - 14)
-  const oneMonthAgo = (new Date()).setMonth(now.getMonth() - 1)
+  const now = new Date(contextDate)
+  const twoWeeksAgo = (new Date(contextDate)).setDate(now.getDate() - 14)
+  const oneMonthAgo = (new Date(contextDate)).setMonth(now.getMonth() - 1)
   const getFreshness = (dateString) => {
     const then = new Date(dateString)
     if (then < oneMonthAgo)
@@ -25,7 +25,6 @@ export const collate = ({ links, assets, liabilities, valuations }) => {
       return 1
     return 0
   }
-
 
   const collated = {}
 
@@ -39,7 +38,7 @@ export const collate = ({ links, assets, liabilities, valuations }) => {
 
   for (const account of assets) {
 
-    const latestValuation = valuations.find(v => v.accountId === account.id)
+    const latestValuation = valuations.filter(v => v.createdAt.split('T')[0] <= contextDate.split('T')[0]).find(v => v.accountId === account.id)
     if (!latestValuation) continue
 
     const newAsset = {
@@ -56,7 +55,7 @@ export const collate = ({ links, assets, liabilities, valuations }) => {
 
   for (const account of liabilities) {
 
-    const latestValuation = valuations.find(v => v.accountId === account.id)
+    const latestValuation = valuations.filter(v => v.createdAt.split('T')[0] <= contextDate.split('T')[0]).find(v => v.accountId === account.id)
     if (!latestValuation) continue
 
     const newLiability = { 
@@ -71,10 +70,15 @@ export const collate = ({ links, assets, liabilities, valuations }) => {
     netWorth -= latestValuation.value
   }
 
-  const sortByLastUpdatedAt = sortByAsc('lastUpdatedAt')
-  collated.assets = newAssets.sort(sortByLastUpdatedAt)
-  collated.liabilities = newLiabilities.sort(sortByLastUpdatedAt)
-  collated.valuations = newValuations
+  collated.assets = newAssets
+  collated.liabilities = newLiabilities
+  collated.valuations = newValuations.sort((a, b) => {
+    if (a.createdAt < b.createdAt)
+      return -1
+    else if (a.createdAt > b.createdAt)
+      return 1
+    return 0
+  })
   collated.calculations = {
     assetValue,
     liabilityValue,
@@ -82,7 +86,7 @@ export const collate = ({ links, assets, liabilities, valuations }) => {
   }
   collated.links = links
 
-  let currentDate = new Date()
+  let currentDate = new Date(contextDate)
   for (let i = 0; i < 13; i++) {
     newHistory.unshift(getNetWorthAt({ date: currentDate, ...collated }) || null)
     currentDate.setMonth(currentDate.getMonth() - 1)

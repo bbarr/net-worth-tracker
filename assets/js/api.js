@@ -59,7 +59,7 @@ export async function deleteLiability(liability) {
   return writeToDisk(existing => {
     return {
       ...existing,
-      assets: existing.assets.filter(a => a.id !== asset.id)
+      liabilities: existing.liabilities.filter(l => l.id !== liability.id)
     }
   })
 }

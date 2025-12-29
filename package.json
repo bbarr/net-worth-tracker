@@ -6,6 +6,7 @@
   "scripts": {
     "start": "static assets --spa",
     "dev": "concurrently 'npm:dev-*'",
+    "dev-server": "npm run start",
     "dev-css": "tailwindcss -i ./src/css/style.css -o ./assets/css/style.css -w",
     "build-css": "tailwindcss -i ./src/css/style.css -o ./assets/css/style.css"
   },
@@ -16,7 +17,7 @@
     "dotenv": "^16.0.3",
     "node-static": "^0.7.11",
     "nodemon": "^2.0.20",
-    "tailwindcss": "^3.2.4"
+    "tailwindcss": "^3.4.1",
     "@tailwindcss/typography": "^0.5.9",
     "@tailwindcss/forms": "^0.5.3"
   },

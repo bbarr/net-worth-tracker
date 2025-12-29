@@ -19,7 +19,7 @@ export default ({ state, actions }) => {
         </div>
         <div class="">${renderMoney(state.calculations.liabilityValue)}</div>
       </div>
-      <div class="shadow">
+      <div class="shadow rounded">
         ${state.liabilities.map(liability => {
           return html`
             <div class="pt-4 pb-2 px-4 border border-b-0 border-gray-100 dark:bg-gray-700 dark:border-gray-600 text-lg first:rounded-t-lg last:rounded-b-lg">

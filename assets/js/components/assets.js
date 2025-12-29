@@ -8,6 +8,7 @@ import { createStubAsset } from '../helpers.js'
 import Icon from './icon.js'
 
 export default ({ state, actions }) => {
+  const presentDay = state.contextDate.split('T')[0] === (new Date()).toISOString().split('T')[0]
   return html`
     <div class="">
       <div class="mb-4 text-2xl font-semibold flex justify-between items-center">
@@ -19,7 +20,7 @@ export default ({ state, actions }) => {
         </div>
         <div class="">${renderMoney(state.calculations.assetValue)}</div>
       </div>
-      <div class="">
+      <div class="shadow rounded">
         ${state.assets.map(asset => {
           return html`
             <div class="pt-4 pb-2 px-4 border border-b-0 border-gray-100 dark:bg-gray-700 dark:border-gray-600 text-lg first:rounded-t-lg last:rounded-b-lg">
@@ -46,10 +47,13 @@ export default ({ state, actions }) => {
               </div>
               <div class="mt-1 text-sm text-gray-400 flex justify-between">
                 <div><a href="#" onClick=${prevDef(() => actions.update({ glossaryKey: 'liquidity' }))}  class="link-definition">Liquidity</a>: ${asset.liquidity === 1 ? 'High' : (asset.liquidity === 2 ? 'Medium' : (asset.liquidity === 3 ? 'Low' : 'Very Low'))}</div>
-                <div class="flex items-center">
-                  <a class="${asset.freshness > 0 && 'link'}" href="#" onClick=${prevDef(() => actions.update({ revaluingAsset: asset }))}>${asset.freshness > 0 ? 'Update' : 'Fresh'}</a>
-                  <div class="ml-2 rounded-full w-2 h-2 ${asset.freshness === 0 ? 'bg-green-500' : (asset.freshness === 1 ? 'bg-yellow-500' : 'bg-red-500')}"></div>
-                </div>
+                ${!presentDay && html`<div class="">Historical View</div>`}
+                ${presentDay && html`
+                  <div class="flex items-center">
+                    <a class="${asset.freshness > 0 && 'link'}" href="#" onClick=${prevDef(() => actions.update({ revaluingAsset: asset }))}>${asset.freshness > 0 ? 'Update' : 'Fresh'}</a>
+                    <div class="ml-2 rounded-full w-2 h-2 ${asset.freshness === 0 ? 'bg-green-500' : (asset.freshness === 1 ? 'bg-yellow-500' : 'bg-red-500')}"></div>
+                  </div>
+                `}
               </div>
             </div>
           `

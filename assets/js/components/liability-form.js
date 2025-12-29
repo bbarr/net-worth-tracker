@@ -156,23 +156,25 @@ export default ({ links, assets, liability, onCancel, onSave }) => {
           `}
         </div>
 
-        <div class="mt-6">
-          <label for="assets" class="block text-sm font-medium text-gray-900 dark:text-white">Related assets</label>
-          <p class="my-2 text-sm text-gray-500 dark:text-gray-400">Select any assets that were purchased using this liability. Like if this is a mortgage, you could select its property asset here.</p>
-          <div class="flex flex-wrap">
-            ${assets.map(a => {
-              return html`
-                <label class="border border-gray-100 p-2 mr-2 mb-2">
-                  ${a.label}
-                  <input class="ml-2" type="checkbox" onChange=${prevDef(toggleLink)} checked=${pendingLinks.find(l => l.liabilityId === current.id && l.assetId === a.id)} value=${a.id} />
-                </label>
-              `
-            })}
+        ${assets.length ? html`
+          <div class="mt-6">
+            <label for="assets" class="block text-sm font-medium text-gray-900 dark:text-white">Related assets</label>
+            <p class="my-2 text-sm text-gray-500 dark:text-gray-400">Select any assets that were purchased using this liability. Like if this is a mortgage, you could select its property asset here.</p>
+            <div class="flex flex-wrap max-h-[200px] overflow-y-auto">
+              ${assets.map(a => {
+                return html`
+                  <label class="border border-gray-100 p-2 mr-2 mb-2">
+                    ${a.label}
+                    <input class="ml-2" type="checkbox" onChange=${prevDef(toggleLink)} checked=${pendingLinks.find(l => l.liabilityId === current.id && l.assetId === a.id)} value=${a.id} />
+                  </label>
+                `
+              })}
+            </div>
+            ${errors.value && html`
+              <p class="mt-2 text-sm text-red-500 dark:text-red-500">${errors.value}</p>
+            `}
           </div>
-          ${errors.value && html`
-            <p class="mt-2 text-sm text-red-500 dark:text-red-500">${errors.value}</p>
-          `}
-        </div>
+        ` : ''}
 
         <div class="flex items-center justify-between mt-10">
           <div>

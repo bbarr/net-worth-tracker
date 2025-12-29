@@ -45,22 +45,6 @@ export default [
       <p>Note that some life circumstances will tend towards a low number here, such as when you are fresh out of college and have school loans, but not much in the asset list to offset them. If you wanted to, you could certainly list your actual college degree as an asset, but the valuation would be pretty loose and not convertible into cash in its entirity at any point.</p>
     `
   },
-  {
-    name: 'Current Ratio',
-    slug: 'current-ratio',
-    body: `
-      <p>
-        This determines if you are able to pay all of the debt that will soon be due. If the number is over 1, you are covered and should be able to pay your debts. Any number under 1 should be cause for concern, and you may need to find a way to free up more cash or else put off any debt until later.
-      </p>
-    `
-  },
-  { 
-    name: 'Working Capital',
-    slug: 'working-capital',
-    body: `
-      <p>Also known as "working capital", this is your cash minus any short-term debt, like credit cards you pay off monthly. If "Cash / Short-Term Debt" is less than 1, this number will be negative.</p>
-    `
-  },
   { 
     name: 'Liquidity',
     slug: 'liquidity',

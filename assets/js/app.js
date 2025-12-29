@@ -31,7 +31,7 @@ const App = ({ state, actions }) => {
       },
       
       '/dashboard': async () => {
-        if (await refresh()) {
+        if (await actions.refresh()) {
           actions.update({ page: 'dashboard' })
         }
       }
@@ -43,23 +43,11 @@ const App = ({ state, actions }) => {
     })
   }, [])
 
-  async function refresh() {
-    try {
-      const data = await getDataFromCache()
-      const collated = collate(data)
-      actions.update(collated)
-      return true
-    } catch(e) {
-      router.goTo('/launch')
-      return false
-    }
-  }
-
   const closeModal = async shouldRefresh => {
     const resetState = { editingAsset: null, editingLiability: null, revaluingAsset: null, revaluingLiability: null, glossaryKey: null } 
     if (shouldRefresh === true) {
       const data = await getDataFromCache()
-      const collated = collate(data)
+      const collated = collate(data, state)
       actions.update({ ...resetState, ...collated })
     } else {
       actions.update({ ...resetState })
@@ -96,6 +84,7 @@ let state = {
     liabilityValue: 0,
     netWorth: 0
   },
+  contextDate: (new Date).toISOString(),
   assets: [],
   liabilities: [],
   valuations: [],
@@ -114,10 +103,27 @@ const actions = {
   update(changes) {
     state = { ...state, ...changes }
     rerender()
+  },
+  updateContextDate(date) {
+    actions.update({ contextDate: date })
+    actions.refresh()
+  },
+  async refresh() {
+    try {
+      const data = await getDataFromCache()
+      const collated = collate(data, state)
+      actions.update(collated)
+      return true
+    } catch(e) {
+      router.goTo('/launch')
+      return false
+    }
   }
+
 }
 
 function rerender() {
+  console.log(state)
   render(html`<${App} state=${state} actions=${actions} />`, document.body)
 }
 
